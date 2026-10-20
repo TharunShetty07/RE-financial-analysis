@@ -1,0 +1,199 @@
+
+{
+  "evaluation_suite": "RE Financial - Monthly Trend Analysis",
+  "version": "1.0",
+  "purpose": "Evaluate the accuracy, consistency, and caution of AI-generated financial trend commentary.",
+  "scoring": {
+    "scale": "0-2 per criterion",
+    "0": "Incorrect, missing, or unsupported",
+    "1": "Partially correct but incomplete or imprecise",
+    "2": "Correct, complete, and supported by the supplied data",
+    "maximum_per_case": 10,
+    "passing_threshold": 8,
+    "critical_rule": "A material numerical error or invented financial fact must be recorded as a critical failure even if the numerical score passes."
+  },
+  "cases": [
+    {
+      "id": "GOLD-001",
+      "name": "Revenue increase",
+      "input": {
+        "previous_month": {
+          "revenue": 100000,
+          "net_income": -10000
+        },
+        "current_month": {
+          "revenue": 120000,
+          "net_income": -5000
+        }
+      },
+      "expected": {
+        "revenue_change": 20000,
+        "revenue_change_pct": 20.0,
+        "net_income_change": 5000,
+        "net_income_status": "Loss narrowed; the business remains loss-making."
+      },
+      "must_include": [
+        "Revenue increased by 20%.",
+        "Net income improved by 5000.",
+        "The current month still has a net loss."
+      ],
+      "must_not": [
+        "Claim that the business became profitable.",
+        "Invent reasons for the revenue increase."
+      ],
+      "rubric": [
+        "Revenue change and percentage are correct.",
+        "Net income change is correct.",
+        "Loss status is described accurately.",
+        "Commentary distinguishes facts from possible explanations.",
+        "No unsupported causal claims are made."
+      ]
+    },
+    {
+      "id": "GOLD-002",
+      "name": "Revenue decline with higher expenses",
+      "input": {
+        "previous_month": {
+          "revenue": 200000,
+          "operating_expenses": 80000,
+          "net_income": 30000
+        },
+        "current_month": {
+          "revenue": 160000,
+          "operating_expenses": 90000,
+          "net_income": 5000
+        }
+      },
+      "expected": {
+        "revenue_change": -40000,
+        "revenue_change_pct": -20.0,
+        "operating_expenses_change": 10000,
+        "operating_expenses_change_pct": 12.5,
+        "net_income_change": -25000,
+        "review_priority": "High"
+      },
+      "must_include": [
+        "Revenue decreased by 20%.",
+        "Operating expenses increased by 12.5%.",
+        "Net income declined by 25000.",
+        "Recommend reviewing revenue drivers and expense changes."
+      ],
+      "must_not": [
+        "Assert that higher expenses caused the revenue decline.",
+        "Invent the cause of the profit reduction."
+      ],
+      "rubric": [
+        "Revenue calculations are correct.",
+        "Expense calculations are correct.",
+        "Net income deterioration is identified.",
+        "The review recommendation is relevant.",
+        "Causal claims remain evidence-based."
+      ]
+    },
+    {
+      "id": "GOLD-003",
+      "name": "Loss-to-profit transition",
+      "input": {
+        "previous_month": {
+          "revenue": 100000,
+          "net_income": -25000
+        },
+        "current_month": {
+          "revenue": 110000,
+          "net_income": 15000
+        }
+      },
+      "expected": {
+        "revenue_change": 10000,
+        "revenue_change_pct": 10.0,
+        "net_income_change": 40000,
+        "status": "Transitioned from a net loss to a net profit",
+        "review_required": true
+      },
+      "must_include": [
+        "Revenue increased by 10%.",
+        "Net income improved by 40000.",
+        "Flag the loss-to-profit transition for human review."
+      ],
+      "must_not": [
+        "Calculate a misleading percentage change using the negative prior net income.",
+        "Assume the profit is recurring or sustainable."
+      ],
+      "rubric": [
+        "Revenue change is correct.",
+        "Net income absolute change is correct.",
+        "The sign transition is identified.",
+        "The reviewer is asked to investigate the underlying transactions.",
+        "No unsupported sustainability claim is made."
+      ]
+    },
+    {
+      "id": "GOLD-004",
+      "name": "Missing comparison data",
+      "input": {
+        "previous_month": {
+          "revenue": null,
+          "net_income": 5000
+        },
+        "current_month": {
+          "revenue": 125000,
+          "net_income": 7000
+        }
+      },
+      "expected": {
+        "revenue_change": null,
+        "revenue_change_pct": null,
+        "net_income_change": 2000,
+        "data_quality_status": "Revenue comparison unavailable because prior-month revenue is missing."
+      },
+      "must_include": [
+        "State that revenue month-over-month change cannot be calculated.",
+        "Do not invent a prior-month revenue value.",
+        "Report the net income improvement of 2000."
+      ],
+      "must_not": [
+        "Treat missing revenue as zero.",
+        "Present a fabricated revenue growth percentage."
+      ],
+      "rubric": [
+        "Missing revenue is handled explicitly.",
+        "Revenue change and percentage are not calculated.",
+        "Net income change is correct.",
+        "Data limitations are clearly explained.",
+        "No missing values are silently replaced."
+      ]
+    },
+    {
+      "id": "GOLD-005",
+      "name": "Expense subtotal mismatch",
+      "input": {
+        "month": "2026-06",
+        "calculated_marketing_total": 10500,
+        "reported_marketing_total": 10000,
+        "tolerance": 0.01
+      },
+      "expected": {
+        "difference": 500,
+        "reconciliation_status": "Mismatch",
+        "review_required": true
+      },
+      "must_include": [
+        "Calculated marketing expenses exceed the reported subtotal by 500.",
+        "Flag the mismatch for investigation.",
+        "Preserve both calculated and reported amounts."
+      ],
+      "must_not": [
+        "Silently overwrite either amount.",
+        "Claim the reconciliation passed.",
+        "Invent the missing or duplicated transaction."
+      ],
+      "rubric": [
+        "The difference is calculated correctly.",
+        "The reconciliation is marked as a mismatch.",
+        "Both source and calculated amounts are preserved.",
+        "A suitable investigation is recommended.",
+        "No unsupported explanation is presented as fact."
+      ]
+    }
+  ]
+}
