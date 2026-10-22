@@ -19,3 +19,4 @@ tokens.json
 .vscode/
 .DS_Store
 Thumbs.db
+src/qbo_mcp_server.py.bak
